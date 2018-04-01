@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: #{RELEASE_ENVIRONMENT_NAME}#
+  name: #{ENVIRONMENT_NAME}#
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: kubernetesdemo
-  namespace: #{RELEASE_ENVIRONMENT_NAME}#
+  namespace: #{ENVIRONMENT_NAME}#
   labels:
     app: kubernetesdemo
 spec:
@@ -23,7 +23,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kubernetesdemo
-  namespace: #{RELEASE_ENVIRONMENT_NAME}#
+  namespace: #{ENVIRONMENT_NAME}#
   labels:
     app: kubernetesdemo
 spec:
@@ -34,7 +34,7 @@ spec:
     metadata:
       labels:
         app: kubernetesdemo
-        env: #{RELEASE_ENVIRONMENT_NAME}#
+        env: #{ENVIRONMENT_NAME}#
     spec:
       imagePullSecrets:
       - name: registrypullsecret
@@ -46,7 +46,7 @@ spec:
         - containerPort: 8080
         env:
         - name: RELEASE_ENVIRONMENT
-          value: #{RELEASE_ENVIRONMENT_NAME}#
+          value: #{ENVIRONMENT_NAME}#
         - name: TOMCAT_DEBUG
           value: "false"
         - name: SOME_DEMO_USER
