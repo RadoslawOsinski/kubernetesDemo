@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetesdemo
+  namespace: dev
+  labels:
+    app: kubernetesdemo
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+  type: LoadBalancer
+  selector:
+    app: kubernetesdemo

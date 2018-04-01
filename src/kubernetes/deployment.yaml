@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #{RELEASE_ENVIRONMENT_NAME}#
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetesdemo
+  namespace: #{RELEASE_ENVIRONMENT_NAME}#
+  labels:
+    app: kubernetesdemo
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+  type: LoadBalancer
+  selector:
+    app: kubernetesdemo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetesdemo
+  namespace: #{RELEASE_ENVIRONMENT_NAME}#
+  labels:
+    app: kubernetesdemo
+spec:
+  selector:
+    matchLabels:
+      app: kubernetesdemo
+  template:
+    metadata:
+      labels:
+        app: kubernetesdemo
+        env: #{RELEASE_ENVIRONMENT_NAME}#
+    spec:
+      imagePullSecrets:
+      - name: registrypullsecret
+      containers:
+      - name: kubernetesdemo
+        image: dev.cwsfe.eu/cwsfe/dancingpair:#{BUILD_BUILDID}#
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: RELEASE_ENVIRONMENT
+          value: #{RELEASE_ENVIRONMENT_NAME}#
+        - name: TOMCAT_DEBUG
+          value: "false"
+        - name: SOME_DEMO_USER
+          valueFrom:
+            secretKeyRef:
+              name: kubernetes-demo-secrets
+              key: kubernetes.demo.username
+        - name: SOME_DEMO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kubernetes-demo-secrets
+              key: kubernetes.demo.password
+        - name: PARAM_2
+          value: "param2"
+        - name: PARAM_1
+          valueFrom:
+            configMapKeyRef:
+              name: kubernetes-demo-config
+              key: app.parameter1
+        - name: SPRING_PROFILES_ACTIVE
+          value: "default"
+        livenessProbe:
+          httpGet:
+            path: /liveness/health
+            port: 8080
+          initialDelaySeconds: 300
+          periodSeconds: 1
+        resources:
+          requests:
+            cpu: 0.25
+            memory: 256Mi
+          limits:
+            cpu: 0.5
+            memory: 512Mi

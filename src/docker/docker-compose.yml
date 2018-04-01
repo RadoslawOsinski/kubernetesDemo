@@ -1,0 +1,12 @@
+version: '2'
+services:
+  dancigpair:
+    build:
+        context: ../..
+        dockerfile: src/docker/Dockerfile
+    image: "${REGISTRY}/${GROUP}/${APPLICATION}:${APPLICATION_VERSION}"
+    ports:
+    - "8080:8080"
+    environment:
+    - TOMCAT_DEBUG=false
+#    - 'spring.profiles.active=default'

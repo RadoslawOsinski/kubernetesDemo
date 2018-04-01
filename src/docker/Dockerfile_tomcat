@@ -1,0 +1,26 @@
+FROM cwsfe_jdk10
+MAINTAINER  Radosław Osiński <Radoslaw.Osinski@gmail.com>
+
+RUN curl -s http://ftp.man.poznan.pl/apache/tomcat/tomcat-9/v9.0.6/bin/apache-tomcat-9.0.6.tar.gz -o /opt/tomcat.tar.gz
+RUN mkdir -p /opt/tomcat
+RUN cd /opt/; tar -xzf tomcat.tar.gz -C /opt/
+
+ENV CATALINA_HOME=/opt/apache-tomcat-9.0.6
+
+EXPOSE 8080
+
+WORKDIR /opt/apache-tomcat-9.0.6
+
+RUN rm -R $CATALINA_HOME/webapps/* && \
+    addgroup --gid 900 tomcat && adduser --home $CATALINA_HOME --uid 900 --ingroup tomcat --shell /bin/bash tomcat && \
+    chown -R tomcat:tomcat $CATALINA_HOME && \
+    chmod 400 $CATALINA_HOME/conf/* && \
+    chmod -R 740 $CATALINA_HOME/logs && \
+    chmod -R 600 $CATALINA_HOME/temp
+
+USER tomcat
+
+ONBUILD     ARG ARTIFACT_PATH=target/*.war
+ONBUILD     COPY $ARTIFACT_PATH $CATALINA_HOME/webapps/ROOT.war
+
+CMD ["bin/catalina.sh", "run"]

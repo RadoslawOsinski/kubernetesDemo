@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  kubernetes.demo.password: #{KUBERNETES_DEMO_PASSWORD}#
+  kubernetes.demo.username: #{KUBERNETES_DEMO_USERNAME}#
+kind: Secret
+metadata:
+  name: kubernetes-demo-secrets
+  namespace: dev
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubernetes-demo-config
+  namespace: dev
+data:
+  app.parameter1: "APP_PARAMETER_1"
