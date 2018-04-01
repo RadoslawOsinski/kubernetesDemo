@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
-  kubernetes.demo.password: #{KUBERNETES_DEMO_PASSWORD}#
-  kubernetes.demo.username: #{KUBERNETES_DEMO_USERNAME}#
+  kubernetes.demo.password: Y2hhbmdlaXQ=
+  kubernetes.demo.username: aGVsbG9Vc2Vy
 kind: Secret
 metadata:
   name: kubernetes-demo-secrets

@@ -1,6 +1,4 @@
-"Hello world" spring boot 2 project packed as "war". Deployed on dockerized JDK 10 and tomcat 9.x.y image.
-Dockerized image is runnable via docker-compose or kubernates/minikube.
-
+##### "Hello world" spring boot 2 project packed as "war". Deployed on dockerized JDK 10 and tomcat 9.x.y image. Dockerized image is runnable via docker-compose or kubernates/minikube.
 
 * Change folder to project root
 ```
@@ -46,6 +44,5 @@ kubectl apply -f src/kubernetes/config_dev.yaml
 kubectl apply -f src/kubernetes/service_dev.yaml
 kubectl apply -f src/kubernetes/deployment_dev.yaml
 ```
-
 
 "config.yaml" and "deployment.yaml" are files for creating entire environments i.e.: DEV, STAGE, RC, PROD 
