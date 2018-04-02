@@ -1,12 +1,22 @@
-version: '2'
+version: '3'
 services:
-  dancigpair:
+  kubernetesdemo1:
     build:
-        context: ../..
+        context: ../../kubernetesDemo1
         dockerfile: src/docker/Dockerfile
-    image: "${REGISTRY}/${GROUP}/${APPLICATION}:${APPLICATION_VERSION}"
+    image: "${REGISTRY}/${GROUP}/${APPLICATION_1}:${APPLICATION_1_VERSION}"
     ports:
     - "8080:8080"
+    environment:
+    - TOMCAT_DEBUG=false
+    - SPRING_PROFILES_ACTIVE=default,dev
+  kubernetesdemo2:
+    build:
+        context: ../../kubernetesDemo2
+        dockerfile: src/docker/Dockerfile
+    image: "${REGISTRY}/${GROUP}/${APPLICATION_2}:${APPLICATION_2_VERSION}"
+    ports:
+    - "8181:8080"
     environment:
     - TOMCAT_DEBUG=false
 #    - 'spring.profiles.active=default'

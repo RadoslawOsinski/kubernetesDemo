@@ -22,7 +22,12 @@ docker build --rm -t cwsfe_tomcat -f src/docker/Dockerfile_tomcat .
 
 * Create application image
 ```
-docker build --rm -t='dev.cwsfe.eu/cwsfe/dancingpair:1' -f src/docker/Dockerfile .
+cd src/docker/; docker-compose build;
+```
+
+* (Optionally) Run application from docker-compose
+```
+cd src/docker/; docker-compose up;
 ```
 
 * Run kubernetes (or minicube on localhost)
@@ -34,15 +39,18 @@ minikube dashboard;
 
 * (Optionaly) move image to minicube:
 ```
-docker save dev.cwsfe.eu/cwsfe/dancingpair:1 | pv | (eval $(minikube docker-env) && docker load)
+docker save dev.cwsfe.eu/cwsfe/kubernetesdemo1:1 | pv | (eval $(minikube docker-env) && docker load)
+docker save dev.cwsfe.eu/cwsfe/kubernetesdemo2:1 | pv | (eval $(minikube docker-env) && docker load)
 ```
 
 * Deploy docker image on kubernetes:
 ```
 kubectl apply -f src/kubernetes/namespace_dev.yaml
 kubectl apply -f src/kubernetes/config_dev.yaml 
-kubectl apply -f src/kubernetes/service_dev.yaml
-kubectl apply -f src/kubernetes/deployment_dev.yaml
+kubectl apply -f src/kubernetes/service_kubernetess_demo1_dev.yaml
+kubectl apply -f src/kubernetes/service_kubernetess_demo2_dev.yaml
+kubectl apply -f src/kubernetes/deployment_kubernetes_demo1_dev.yaml
+kubectl apply -f src/kubernetes/deployment_kubernetes_demo2_dev.yaml
 ```
 
 "config.yaml" and "deployment.yaml" are files for creating entire environments i.e.: DEV, STAGE, RC, PROD 

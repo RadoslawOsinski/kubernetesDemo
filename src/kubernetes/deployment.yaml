@@ -40,7 +40,7 @@ spec:
       - name: registrypullsecret
       containers:
       - name: kubernetesdemo
-        image: dev.cwsfe.eu/cwsfe/dancingpair:#{BUILD_BUILDID}#
+        image: dev.cwsfe.eu/cwsfe/kubernetesDemo1:#{BUILD_BUILDID}#
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

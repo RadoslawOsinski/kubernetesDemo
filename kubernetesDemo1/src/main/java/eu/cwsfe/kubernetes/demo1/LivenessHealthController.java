@@ -1,4 +1,4 @@
-package eu.cwsfe.kubernetes.demo;
+package eu.cwsfe.kubernetes.demo1;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

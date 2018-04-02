@@ -1,25 +1,25 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: kubernetesdemo
+  name: kubernetesdemo1
   namespace: dev
   labels:
-    app: kubernetesdemo
+    app: kubernetesdemo1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kubernetesdemo
+      app: kubernetesdemo1
   template:
     metadata:
       labels:
-        app: kubernetesdemo
+        app: kubernetesdemo1
         env: dev
     spec:
       imagePullSecrets:
       - name: registrypullsecret
       containers:
-      - name: kubernetesdemo1
+      - name: kubernetesdemo2
         image: dev.cwsfe.eu/cwsfe/kubernetesdemo1:1
         imagePullPolicy: Never
         ports:
@@ -47,49 +47,7 @@ spec:
               name: kubernetes-demo-config
               key: app.parameter1
         - name: SPRING_PROFILES_ACTIVE
-          value: "default"
-        livenessProbe:
-          httpGet:
-            path: /liveness/health
-            port: 8080
-          initialDelaySeconds: 300
-          periodSeconds: 1
-        resources:
-          requests:
-            cpu: 0.25
-            memory: 256Mi
-          limits:
-            cpu: 0.5
-            memory: 512Mi
-      - name: kubernetesdemo2
-        image: dev.cwsfe.eu/cwsfe/kubernetesdemo2:1
-        imagePullPolicy: Never
-        ports:
-        - containerPort: 8080
-        env:
-        - name: RELEASE_ENVIRONMENT
-          value: dev
-        - name: TOMCAT_DEBUG
-          value: "false"
-        - name: SOME_DEMO_USER
-          valueFrom:
-            secretKeyRef:
-              name: kubernetes-demo-secrets
-              key: kubernetes.demo.username
-        - name: SOME_DEMO_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: kubernetes-demo-secrets
-              key: kubernetes.demo.password
-        - name: PARAM_2
-          value: "param2"
-        - name: PARAM_1
-          valueFrom:
-            configMapKeyRef:
-              name: kubernetes-demo-config
-              key: app.parameter1
-        - name: SPRING_PROFILES_ACTIVE
-          value: "default"
+          value: "default,dev"
         livenessProbe:
           httpGet:
             path: /liveness/health

@@ -1,0 +1,3 @@
+eu.cwsfe.kubernetes:
+  demo2:
+    url: "http://kubernetesdemo2:8080"
