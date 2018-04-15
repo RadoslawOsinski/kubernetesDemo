@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gitlab-redis-persistent-volume
+  labels:
+      data-label: gitlab-redis-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: localhost-minikube
+  capacity:
+    storage: 2Gi
+  hostPath:
+    path: /data/gitlab-redis/
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gitlab-redis
+  namespace: ci
+  labels:
+    app: gitlab-redis
+spec:
+  replicas: 1
+  serviceName: gitlab-redis
+  selector:
+    matchLabels:
+      app: gitlab-redis
+  template:
+    metadata:
+      labels:
+        app: gitlab-redis
+        env: ci
+    spec:
+      imagePullSecrets:
+      - name: registrypullsecret
+      containers:
+      - name: gitlab-redis
+        image: sameersbn/redis:latest
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 6379
+        volumeMounts:
+        - mountPath: "/var/lib/redis"
+          name: gitlab-redis-persistent-data-volume
+        resources:
+          requests:
+            cpu: 0.8
+            memory: 512Mi
+          limits:
+            cpu: 1
+            memory: 1024Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: gitlab-redis-persistent-data-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: localhost-minikube
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-redis
+  namespace: ci
+  labels:
+    app: gitlab-redis
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+  type: LoadBalancer
+  selector:
+    app: gitlab-redis

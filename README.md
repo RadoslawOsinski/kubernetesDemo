@@ -53,4 +53,11 @@ kubectl apply -f src/kubernetes/deployment_kubernetes_demo1_dev.yaml
 kubectl apply -f src/kubernetes/deployment_kubernetes_demo2_dev.yaml
 ```
 
-"config.yaml" and "deployment.yaml" are files for creating entire environments i.e.: DEV, STAGE, RC, PROD 
+* Deploy gitlab on minikube - for hello world project:
+```
+kubectl apply -f src/kubernetes/ci/namespace_ci.yaml
+kubectl apply -f src/kubernetes/ci/gitlab/minikube_storage.yaml
+kubectl apply -f src/kubernetes/ci/gitlab/deployment_redis_ci.yaml
+kubectl apply -f src/kubernetes/ci/gitlab/deployment_postgresql_ci.yaml
+kubectl apply -f src/kubernetes/ci/gitlab/deployment_gitlab_ci.yaml
+```
