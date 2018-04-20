@@ -73,10 +73,10 @@ spec:
         resources:
           requests:
             cpu: 0.4
-            memory: 512Mi
+            memory: 1Gi
           limits:
-            cpu: 0.5
-            memory: 1024Mi
+            cpu: 0.6
+            memory: 2Gi
   volumeClaimTemplates:
     - metadata:
         name: gitlab-postgresql-persistent-data-volume

@@ -159,7 +159,7 @@ spec:
         - name: REDIS_PORT
           value: "6379"
         - name: UNICORN_WORKERS
-          value: "4"
+          value: "3"
         - name: UNICORN_TIMEOUT
           value: "120"
         - name: OAUTH_ENABLED
@@ -169,11 +169,11 @@ spec:
             name: gitlab-persistent-data-volume
         resources:
           requests:
-            cpu: 1.4
-            memory: 1.8Gi
+            cpu: 0.5
+            memory: 4Gi
           limits:
-            cpu: 1.5
-            memory: 1.9Gi
+            cpu: 2.5
+            memory: 5Gi
   volumeClaimTemplates:
     - metadata:
         name: gitlab-persistent-data-volume

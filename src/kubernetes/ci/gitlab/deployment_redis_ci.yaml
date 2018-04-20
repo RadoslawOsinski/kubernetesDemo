@@ -46,11 +46,11 @@ spec:
           name: gitlab-redis-persistent-data-volume
         resources:
           requests:
-            cpu: 0.8
-            memory: 512Mi
+            cpu: 0.6
+            memory: 1Gi
           limits:
-            cpu: 1
-            memory: 1024Mi
+            cpu: 0.9
+            memory: 2Gi
   volumeClaimTemplates:
     - metadata:
         name: gitlab-redis-persistent-data-volume
