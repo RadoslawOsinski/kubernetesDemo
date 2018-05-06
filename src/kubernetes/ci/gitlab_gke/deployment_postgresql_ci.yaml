@@ -1,0 +1,87 @@
+apiVersion: v1
+data:
+  gitlab.postgresql.password: cGFzc3dvcmQ=
+  gitlab.postgresql.username: Z2l0bGFi
+kind: Secret
+metadata:
+  name: gitlab-postgresql-secrets
+  namespace: ci
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gitlab-postgresql
+  namespace: ci
+  labels:
+    app: gitlab-postgresql
+spec:
+  replicas: 1
+  serviceName: gitlab-postgresql
+  selector:
+    matchLabels:
+      app: gitlab-postgresql
+  template:
+    metadata:
+      labels:
+        app: gitlab-postgresql
+        env: ci
+    spec:
+      imagePullSecrets:
+      - name: registrypullsecret
+      containers:
+      - name: gitlab-postgresql
+        image: sameersbn/postgresql:9.6-2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5432
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-postgresql-secrets
+              key: gitlab.postgresql.username
+        - name: DB_PASS
+          value: password
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-postgresql-secrets
+              key: gitlab.postgresql.password
+        - name: DB_NAME
+          value: gitlabhq_production
+        - name: DB_EXTENSION
+          value: pg_trgm
+        volumeMounts:
+        - mountPath: "/var/lib/postgresql"
+          name: gitlab-postgresql-persistent-data-volume
+        resources:
+          requests:
+            cpu: 0.4
+            memory: 1Gi
+          limits:
+            cpu: 0.6
+            memory: 2Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: gitlab-postgresql-persistent-data-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-postgresql
+  namespace: ci
+  labels:
+    app: gitlab-postgresql
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+  type: ClusterIP
+  selector:
+    app: gitlab-postgresql

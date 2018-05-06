@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gitlab-redis
+  namespace: ci
+  labels:
+    app: gitlab-redis
+spec:
+  replicas: 1
+  serviceName: gitlab-redis
+  selector:
+    matchLabels:
+      app: gitlab-redis
+  template:
+    metadata:
+      labels:
+        app: gitlab-redis
+        env: ci
+    spec:
+      imagePullSecrets:
+      - name: registrypullsecret
+      containers:
+      - name: gitlab-redis
+        image: sameersbn/redis:latest
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 6379
+        volumeMounts:
+        - mountPath: "/var/lib/redis"
+          name: gitlab-redis-persistent-data-volume
+        resources:
+          requests:
+            cpu: 0.6
+            memory: 1Gi
+          limits:
+            cpu: 0.9
+            memory: 2Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: gitlab-redis-persistent-data-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-redis
+  namespace: ci
+  labels:
+    app: gitlab-redis
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+  type: ClusterIP
+  selector:
+    app: gitlab-redis

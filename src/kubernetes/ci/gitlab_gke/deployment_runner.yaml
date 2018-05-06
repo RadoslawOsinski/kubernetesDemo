@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-runner
+  namespace: ci
+data:
+  config.toml: |
+    concurrent = 1
+
+    [[runners]]
+      name = "example Kubernetes Runner"
+      url = "https://gitlab.example.eu:10443/"
+      token = "x"
+      executor = "shell"
+#      [runners.kubernetes]
+#        tls_verify = false
+#        namespace = "ci"
+#        image = "busybox"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab-runner
+  namespace: ci
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: gitlab-runner
+  template:
+    metadata:
+      labels:
+        name: gitlab-runner
+    spec:
+      containers:
+      - args:
+        - run
+        image: gitlab/gitlab-runner:latest
+        imagePullPolicy: Always
+        name: gitlab-runner
+        env:
+        - name: "CA_CERTIFICATES_PATH"
+          value: '/etc/gitlab-runner/certs/ca.crt'
+        - name: "GIT_SSL_NO_VERIFY"
+          value: 'true'
+        volumeMounts:
+        - mountPath: /etc/gitlab-runner
+          name: gitlab-runner-conf
+        - mountPath: /etc/gitlab-runner/certs/
+          name: gitlab-ca-crt-conf
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - configMap:
+          name: gitlab-runner
+        name: gitlab-runner-conf
+      - configMap:
+          name: gitlab-ca-crt-config
+        name: gitlab-ca-crt-conf
+      - hostPath:
+          path: /usr/share/ca-certificates/mozilla
+        name: cacerts

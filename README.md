@@ -61,3 +61,18 @@ kubectl apply -f src/kubernetes/ci/gitlab/deployment_redis_ci.yaml
 kubectl apply -f src/kubernetes/ci/gitlab/deployment_postgresql_ci.yaml
 kubectl apply -f src/kubernetes/ci/gitlab/deployment_gitlab_ci.yaml
 ```
+
+CI INFRASTRUCTURE ON GKE. DELETED AFTER TESTS. 
+---
+#####PREFERRED MANAGED INSTANCE ON 'https://gitlab.com'
+
+```
+gloud auth login
+gcloud container clusters get-credentials k8s --zone europe-west3-a --project projectSecretId-199519
+kubectl apply -f src/kubernetes/ci/namespace_ci.yaml
+kubectl apply -f src/kubernetes/ci/gitlab_gke/gitlab-ca_config.yaml
+kubectl apply -f src/kubernetes/ci/gitlab_gke/gitlab-crt_config.yaml
+kubectl apply -f src/kubernetes/ci/gitlab_gke/deployment_redis_ci.yaml
+kubectl apply -f src/kubernetes/ci/gitlab_gke/deployment_postgresql_ci.yaml
+kubectl apply -f src/kubernetes/ci/gitlab_gke/deployment_gitlab_ci.yaml
+```

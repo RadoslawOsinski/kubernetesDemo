@@ -1,0 +1,16 @@
+openssl genrsa -out ca.key 4096
+
+openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/C=PL/ST=Mazowsze/L=Warsaw/O=exampleCA/CN=ca.example.pl" -out ca.crt
+
+openssl genrsa -out gitlab.key 4096
+
+openssl req -new -key gitlab.key -sha256 -subj "/C=PL/ST=Mazowsze/L=Warsaw/O=example/CN=gitlab.example.eu" -out gitlab.csr
+
+openssl x509 -req -extfile <(printf "subjectAltName=DNS:gitlab.example.eu") -in gitlab.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out gitlab.crt
+
+openssl x509 -in gitlab.crt -text -noout
+
+
+
+=======================
+Gitlab client can add gitlab.crt and ca.crt to /usr/local/share/ca-certificates/ and execute update-ca-certificates2
